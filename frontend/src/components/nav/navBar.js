@@ -1,0 +1,42 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fatchNavBar } from "../../store/reducer";
+import { Link } from "react-router-dom";
+
+export default function NavBar() {
+
+  const menu = useSelector((state) => state.data.menu)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+      dispatch(fatchNavBar())
+  }, [])
+
+  return (
+    <nav className="navbar is-dark">
+      <div className="navbar-brand">
+        <Link className="navbar-item" to="">Saul Gadgets</Link>
+        <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="main-navbar">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="main-navbar" className="navbar-menu">
+        <div className="navbar-end">
+          {
+            menu.map((v,i) =>
+            <Link key={i} to={v.slug} className="navbar-item">{v.title}</Link>
+            )
+          }
+          {/* <div class="navbar-item" id="navbarapp">
+            <a href="{% url 'cart' %}" class="button is-primary">Cart ([[ numItems ]])</a>
+          </div> */}
+          <Link className="navbar-item" to="contact/">Contact</Link>
+            
+        </div>
+      </div>
+    </nav>
+  )
+}

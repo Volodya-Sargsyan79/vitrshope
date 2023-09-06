@@ -20,8 +20,9 @@ class ProductDetailView(generics.ListAPIView):
   queryset = Product.objects.all()
   serializer_class = ProductSerializer
 
-  @action(detail=False, methods=['POST'])
-  def product_detail(self, request, slug):
-    productDetail = get_object_or_404(Product, slug=slug)
-    print(productDetail)
-    return render(request)
+  # @action(detail=False, methods=['POST'])
+  # def product_detail(self, request, slug):
+    
+  #   productDetail = get_object_or_404(Product, slug=slug)
+  #   print(productDetail, 1323465464)
+  #   return render(request)

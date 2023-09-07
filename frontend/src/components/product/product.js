@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Product({ product }) {
-
+export default function Product({ product, category }) {
   return (
     <>
       <div className="column is-2" >
@@ -16,7 +15,7 @@ export default function Product({ product }) {
             </div>
           </div>
           <footer className="card-footer">
-            <Link to={product.slug} className="card-footer-item">View</Link>
+            <Link to={`/${category}/${product.slug}/`} className="card-footer-item">View</Link>
           </footer>
         </div>
       </div>

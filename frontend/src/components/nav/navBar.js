@@ -1,16 +1,20 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fatchNavBar } from "../../store/reducer";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function NavBar() {
 
-  const menu = useSelector((state) => state.data.menu)
-  const dispatch = useDispatch()
+
+  const [category, setCategory] = useState()
+
+  const sendView = async () => {
+    let response = await fetch('/api/category/')
+    let data = await response.json()
+    setCategory(data)
+  }
 
   useEffect(() => {
-      dispatch(fatchNavBar())
-  }, [])
+    sendView()
+  },[])
 
   return (
     <nav className="navbar is-dark">
@@ -26,8 +30,8 @@ export default function NavBar() {
       <div id="main-navbar" className="navbar-menu">
         <div className="navbar-end">
           {
-            menu.map((v,i) =>
-            <Link key={i} to={v.slug} className="navbar-item">{v.title}</Link>
+            category?.map((v,i) =>
+            <Link key={i} to={`/${v.slug}/`}className="navbar-item">{v.title}</Link>
             )
           }
           {/* <div class="navbar-item" id="navbarapp">

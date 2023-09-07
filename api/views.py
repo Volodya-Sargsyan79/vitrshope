@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, status, viewsets
+from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from .serializers import ProductSerializer, CategorySerializer
 from .models import Product, Category
 from rest_framework.decorators import api_view
@@ -19,7 +18,20 @@ class CategoryView(generics.ListAPIView):
 
 
 @api_view(['GET'])
-def testProduct(request, slug):
+def product_detail(request, category, slug):
+
   queryset = Product.objects.get(slug=slug)
   serializer_class = ProductSerializer(queryset, many=False)
+  
   return Response(serializer_class.data)
+
+@api_view(['GET'])
+def categoy_detail(request, slug):
+
+  queryset = Category.objects.get(slug=slug)
+  serializer_class = CategorySerializer(queryset, many=False)
+
+  queryset_filter = Product.objects.filter(category=serializer_class.data['id'])
+  serializer_class_filter = ProductSerializer(queryset_filter, many=True)
+
+  return Response(serializer_class_filter.data)

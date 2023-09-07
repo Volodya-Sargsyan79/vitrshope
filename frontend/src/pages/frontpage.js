@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProduct } from "../store/reducer";
+import React, { useState, useEffect } from "react";
 import Product from "../components/product/product";
 
 export default function Frontpage() {
 
-  const product = useSelector((state) => state.data.product)
-  const dispatch = useDispatch()
+  const [product, setProduct] = useState()
+
+  const sendView = async () => {
+    let response = await fetch('/api/product/')
+    let data = await response.json()
+    setProduct(data)
+  }
 
   useEffect(() => {
-      dispatch(fetchProduct())
-  }, [])
+    sendView()
+  },[])
 
   return (
     <div className="columns is-multiline">
       {
-        product.map((v,i) =>
-          <Product key={i} product={v}/>
+        product?.map((v,i) =>
+          <Product key={i} product={v} />
         )
       }
     </div>

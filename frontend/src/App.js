@@ -7,6 +7,7 @@ import NavBar from "./components/nav/navBar";
 import { store } from "./store/index";
 import { Provider } from "react-redux";
 import ProductDetail from "./components/product/product_detail";
+import CategoryDetail from "./pages/category_detail";
 
 export default function App() {
     return (
@@ -16,7 +17,8 @@ export default function App() {
                 <Routes>
                     <Route path="" element={<Frontpage />} />
                     <Route path="contact/" element={<Contact />} />
-                    <Route path="/:slug/" element={<ProductDetail />} />
+                    <Route path="/:category/:slug/" element={<ProductDetail />} />
+                    <Route path="/:slug/" element={<CategoryDetail />} />
                 </Routes>
             </div>
         </Provider>

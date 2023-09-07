@@ -7,7 +7,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState({})
 
   const sendView = async (slug) => {
-    let response = await fetch(`/api/${slug}`)
+    let response = await fetch(`/api/${slug}/${slug}/`)
     let data = await response.json()
     setProduct(data)
   }
@@ -16,7 +16,6 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
- 
   return (
     <>
       <div className="column is-2" >

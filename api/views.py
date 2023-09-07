@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, status
-from rest_framework.decorators import action
+from rest_framework import generics, status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .serializers import ProductSerializer, CategorySerializer
 from .models import Product, Category
 from rest_framework.decorators import api_view
@@ -16,13 +17,9 @@ class CategoryView(generics.ListAPIView):
   queryset = Category.objects.all()
   serializer_class = CategorySerializer
 
-class ProductDetailView(generics.ListAPIView):
-  queryset = Product.objects.all()
-  serializer_class = ProductSerializer
 
-  # @action(detail=False, methods=['POST'])
-  # def product_detail(self, request, slug):
-    
-  #   productDetail = get_object_or_404(Product, slug=slug)
-  #   print(productDetail, 1323465464)
-  #   return render(request)
+@api_view(['GET'])
+def testProduct(request, slug):
+  queryset = Product.objects.get(slug=slug)
+  serializer_class = ProductSerializer(queryset, many=False)
+  return Response(serializer_class.data)

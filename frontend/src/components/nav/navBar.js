@@ -34,9 +34,9 @@ export default function NavBar() {
             <Link key={i} to={`/${v.slug}/`}className="navbar-item">{v.title}</Link>
             )
           }
-          {/* <div class="navbar-item" id="navbarapp">
-            <a href="{% url 'cart' %}" class="button is-primary">Cart ([[ numItems ]])</a>
-          </div> */}            
+          <div class="navbar-item" id="navbarapp">
+            <Link to="cart/" class="button is-primary">Cart</Link>
+          </div>          
         </div>
       </div>
     </nav>

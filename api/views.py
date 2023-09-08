@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 # Create your views here.
 
 class ProductView(generics.ListAPIView):
-  queryset = Product.objects.all()
+  queryset = Product.objects.filter(is_featured=True)
   serializer_class = ProductSerializer
 
 

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom"
+import Button from "../../UI/button";
 
 export default function ProductDetail() {
   const {slug} = useParams()
@@ -16,6 +17,34 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
+  const addToCart =()=> {
+    
+    var data = {
+      'product_id': product.id, 
+      'update': false,
+      'quantity': 1
+    }
+
+    fetch('/api/add_to_cart/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(data)
+    })
+    .then((response) => {
+      console.log(response)
+      store.commit('increment', 1)
+    })
+    .catch(function (error) {
+      console.log('Error 2');
+      console.log(error)
+    })
+  }
+
+
   return (
     <>
       <div className="column is-2" >
@@ -23,9 +52,10 @@ export default function ProductDetail() {
           <div className="card-content">
             <div className="media">
               <div className="media-content">
-                <p className="title is-4">{ product.title }</p>
-                <p className="subtitle is-6">{ product.price }</p>
-                <p className="subtitle is-6">{ product.description }</p>
+                <h1 className="title">{ product.title }</h1>
+                <h2 className="subtitle">{ product.price }</h2>
+                <p>{ product.description }</p>
+                <Button name="Add to cart" click={ addToCart }/>
               </div>
             </div>
           </div>

@@ -35,3 +35,13 @@ def categoy_detail(request, slug):
   serializer_class_filter = ProductSerializer(queryset_filter, many=True)
 
   return Response(serializer_class_filter.data)
+
+@api_view(['GET'])
+def catedory(request, pk):
+
+  print(pk)
+
+  queryset = Category.objects.get(id=pk)
+  serializer_class = CategorySerializer(queryset, many=False)
+  
+  return Response(serializer_class.data)

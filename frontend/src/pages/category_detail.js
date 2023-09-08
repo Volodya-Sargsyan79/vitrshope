@@ -20,7 +20,7 @@ export default function CategoryDetail() {
       <div className="columns is-multiline">
         {
           product?.map((v,i) =>
-            <Product key={i} product={v} category={slug}/>
+            <Product key={i} product={v} category={v.category}/>
           )
         }
       </div>

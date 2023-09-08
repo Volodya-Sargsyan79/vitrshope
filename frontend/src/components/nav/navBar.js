@@ -7,7 +7,7 @@ export default function NavBar() {
   const [category, setCategory] = useState()
 
   const sendView = async () => {
-    let response = await fetch('/api/category/')
+    let response = await fetch('/api/categories/')
     let data = await response.json()
     setCategory(data)
   }

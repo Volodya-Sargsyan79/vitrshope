@@ -19,7 +19,7 @@ export default function Frontpage() {
     <div className="columns is-multiline">
       {
         product?.map((v,i) =>
-          <Product key={i} product={v} />
+          <Product key={i} product={v} category={v.category}/>
         )
       }
     </div>

@@ -36,9 +36,7 @@ export default function NavBar() {
           }
           {/* <div class="navbar-item" id="navbarapp">
             <a href="{% url 'cart' %}" class="button is-primary">Cart ([[ numItems ]])</a>
-          </div> */}
-          <Link className="navbar-item" to="contact/">Contact</Link>
-            
+          </div> */}            
         </div>
       </div>
     </nav>

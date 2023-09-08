@@ -8,6 +8,8 @@ import { store } from "./store/index";
 import { Provider } from "react-redux";
 import ProductDetail from "./components/product/product_detail";
 import CategoryDetail from "./pages/category_detail";
+import Footer from "./components/footer/footer";
+import About from "./pages/about";
 
 export default function App() {
     return (
@@ -19,8 +21,10 @@ export default function App() {
                     <Route path="contact/" element={<Contact />} />
                     <Route path="/:category/:slug/" element={<ProductDetail />} />
                     <Route path="/:slug/" element={<CategoryDetail />} />
+                    <Route path="about/" element={<About />} />
                 </Routes>
             </div>
+            <Footer />
         </Provider>
 
     )

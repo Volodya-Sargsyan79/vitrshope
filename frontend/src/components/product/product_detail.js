@@ -17,33 +17,32 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
-  const addToCart =()=> {
-    
+  // const csrfToken = document.getElementById('app').getAttribute('data-csrf_token');
+
+  const addToCart = async ()=> {
+
     var data = {
       'product_id': product.id, 
       'update': false,
       'quantity': 1
     }
-
     fetch('/api/add_to_cart/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
+        'X-CSRFToken': csrf_token
       },
       credentials: 'same-origin',
       body: JSON.stringify(data)
     })
     .then((response) => {
       console.log(response)
-      store.commit('increment', 1)
     })
     .catch(function (error) {
       console.log('Error 2');
       console.log(error)
-    })
-  }
-
+    }) 
+  };
 
   return (
     <>

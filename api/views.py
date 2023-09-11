@@ -1,9 +1,11 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import ProductSerializer, CategorySerializer
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer
 from .models import Product, Category
 from rest_framework.decorators import api_view
+from cart.cart import Cart
 
 # Create your views here.
 
@@ -39,9 +41,16 @@ def categoy_detail(request, slug):
 @api_view(['GET'])
 def catedory(request, pk):
 
-  print(pk)
-
   queryset = Category.objects.get(id=pk)
   serializer_class = CategorySerializer(queryset, many=False)
   
   return Response(serializer_class.data)
+
+def cart_detail(request):
+  cart = Cart(request)
+  
+  for item in cart:
+    print(item, 22222)
+  
+  serializer = CartSerializer(cart)
+  return Response(cart)

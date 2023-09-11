@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"/>
-    <title>Shop</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"/>
+  <title>Shop</title>
     <!-- {% load static %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link
@@ -13,10 +13,13 @@
     />
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}"
     /> -->
+  <script>
+    var csrf_token = "{{ csrf_token }}";
+  </script>
 </head>
 <body>
   <div id="main">
-    <div id="root"></div>
+    <div id="root" ></div>
   </div>
   <script src="{% static 'js/main.js' %}"></script>
 </body>

@@ -4,20 +4,11 @@ import Button from "../UI/button";
 export default function Cart() {
 
   const [product, setProduct] = useState()
+  const [incrementQuantity, setIncrementQuantity] = useState(0)
   const [title, setTitle] = useState(['Product', 'Quantity', 'Price'])
 
-  const sendView = async () => {
-    let response = await fetch(`/api/cart_detail/`)
-    let data = await response.json()
-    setProduct(Object.keys(data).map(key => ({ id: key, ...data[key] })))
-  }
-
-
-  useEffect(() => {
-    sendView()
-  }, [])
-  
   const removeProduct =(product_id)=> {
+
     var data = {
       'product_id': product_id
     }
@@ -37,14 +28,17 @@ export default function Cart() {
       console.log('Error 2');
       console.log(error)
     })
+
   }
 
   const increment =(product_id, quantity)=> {
+    
     var data = {
       'product_id': product_id, 
       'update': true,
       'quantity': quantity + 1
     }
+
     fetch('/api/add_to_cart/', {
       method: 'POST',
       headers: {
@@ -61,7 +55,19 @@ export default function Cart() {
       console.log('Error 2');
       console.log(error)
     })
+
   }
+
+  
+  useEffect( () => {
+    const sendView = async () => {
+      let response = await fetch(`/api/cart_detail/`)
+      let data = await response.json()
+      setProduct(Object.keys(data).map(key => ({ id: key, ...data[key] })))
+    }
+    sendView()
+  },[])
+
 
   return (
     <div className="table">

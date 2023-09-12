@@ -4,10 +4,8 @@ import json
 from django.forms.models import model_to_dict
 
 class Cart(object):
+
   def __init__(self, request):
-
-    
-
     self.session = request.session
     cart = self.session.get(settings.CART_SESSION_ID)
 

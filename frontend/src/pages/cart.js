@@ -1,14 +1,17 @@
 import React, {useState, useEffect} from "react";
+import Button from "../UI/button";
 
 export default function Cart() {
 
   const [product, setProduct] = useState()
+  const [title, setTitle] = useState(['Product', 'Quantity', 'Price'])
 
   const sendView = async () => {
     let response = await fetch(`/api/cart_detail/`)
     let data = await response.json()
     setProduct(Object.keys(data).map(key => ({ id: key, ...data[key] })))
   }
+
 
   useEffect(() => {
     sendView()
@@ -38,16 +41,30 @@ export default function Cart() {
   }
 
   return (
-    <div>
-      <h1>Cart</h1>
-      {
-        product?.map((v,i)=>
-          <div key={i}>
-            <p>{v.product.title}</p>
-            <button onClick={() => removeProduct(v.id) }>Remove from cart</button>
-          </div>
-        )
-      }
+    <div className="table">
+      <table className="table">
+            <thead>
+                <tr>
+                    {
+                        title.map((v,i)=>
+                            <th key={i}>{v}</th>
+                        )
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    product?.map((v,i)=>
+                        <tr key={i}>
+                            <td>{v.product.title}</td>
+                            <td>{v.quantity}</td>
+                            <td>${v.price}</td>
+                            <td ><Button click={()=>removeProduct(v.product.id)} name='Remove from cart'/></td>
+                        </tr>
+                    )
+                }
+            </tbody>
+        </table>
     </div>
   )
 }

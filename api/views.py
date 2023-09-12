@@ -6,6 +6,8 @@ from .serializers import ProductSerializer, CategorySerializer, CartSerializer
 from .models import Product, Category
 from rest_framework.decorators import api_view
 from cart.cart import Cart
+from django.http import JsonResponse
+from django.contrib.sessions.models import Session
 
 # Create your views here.
 
@@ -46,11 +48,37 @@ def catedory(request, pk):
   
   return Response(serializer_class.data)
 
+def api_add_to_cart(request):
+
+  data = json.loads(request.body)
+  jsonresponse = {'success': True}
+  product_id = data['product_id']
+  update = data['update']
+  quantity = data['quantity']
+  
+  product = get_object_or_404(Product, pk=product_id)
+ 
+
+  cart = Cart(request)
+
+  if not update:
+    cart.add(product=product, update_quantity=False)
+  else:
+    cart.add(product=product, quantity=quantity, update_quantity=True)
+  return JsonResponse(jsonresponse)
+
+
+def api_remove_from_cart(request):
+  data = json.loads(request.body)
+  jsonresponse = {'success': True}
+  product_id = str(data['product_id'])
+
+  cart = Cart(request)
+  cart.remove(product_id)
+
+  return JsonResponse(jsonresponse)
+
+
 def cart_detail(request):
   cart = Cart(request)
-  
-  for item in cart:
-    print(item, 22222)
-  
-  serializer = CartSerializer(cart)
-  return Response(cart)
+  return JsonResponse(cart.cart)

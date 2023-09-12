@@ -17,7 +17,6 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
-  // const csrfToken = document.getElementById('app').getAttribute('data-csrf_token');
 
   const addToCart = async ()=> {
 
@@ -41,7 +40,7 @@ export default function ProductDetail() {
     .catch(function (error) {
       console.log('Error 2');
       console.log(error)
-    }) 
+    })
   };
 
   return (

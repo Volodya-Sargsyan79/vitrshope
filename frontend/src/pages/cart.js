@@ -18,11 +18,34 @@ export default function Cart() {
   }, [])
   
   const removeProduct =(product_id)=> {
-    console.log(product_id)
     var data = {
       'product_id': product_id
     }
     fetch('/api/remove_from_cart/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrf_token
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(data)
+    })
+    .then((response) => {
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log('Error 2');
+      console.log(error)
+    })
+  }
+
+  const increment =(product_id, quantity)=> {
+    var data = {
+      'product_id': product_id, 
+      'update': true,
+      'quantity': quantity + 1
+    }
+    fetch('/api/add_to_cart/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,9 +80,12 @@ export default function Cart() {
                     product?.map((v,i)=>
                         <tr key={i}>
                             <td>{v.product.title}</td>
-                            <td>{v.quantity}</td>
+                            <td>
+                              {v.quantity}
+                              <Button click={ () => increment(v.product.id, v.quantity) } name='+'/>
+                            </td>
                             <td>${v.price}</td>
-                            <td ><Button click={()=>removeProduct(v.product.id)} name='Remove from cart'/></td>
+                            <td ><Button click={ ()=> removeProduct(v.product.id) } name='Remove from cart'/></td>
                         </tr>
                     )
                 }

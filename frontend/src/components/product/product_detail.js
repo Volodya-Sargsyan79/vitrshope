@@ -2,11 +2,11 @@ import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom"
 import Button from "../../UI/button";
 
-export default function ProductDetail() {
+export default function ProductDetail({reduceQuantity}) {
   const {slug} = useParams()
 
   const [product, setProduct] = useState({})
-
+  
   const sendView = async (slug) => {
     let response = await fetch(`/api/${slug}/${slug}/`)
     let data = await response.json()
@@ -36,6 +36,7 @@ export default function ProductDetail() {
     })
     .then((response) => {
       console.log(response)
+
     })
     .catch(function (error) {
       console.log('Error 2');

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-export default function NavBar() {
-
+export default function NavBar({quantity}) {
 
   const [category, setCategory] = useState()
 
@@ -35,7 +34,7 @@ export default function NavBar() {
             )
           }
           <div className="navbar-item" id="navbarapp">
-            <Link to="cart/" className="button is-primary">Cart</Link>
+            <Link to="cart/" className="button is-primary">Cart ({quantity})</Link>
           </div>          
         </div>
       </div>

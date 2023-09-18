@@ -1,33 +1,24 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux"
-import { fetchCart } from "../store/reducer"
+import reducer, { fetchCart } from "../store/reducer"
 
 import Button from "../UI/button"
 
-export default function Cart() {
+export default function Cart({reduceQuantity}) {
 
   const [product, setProduct] = useState()
   const [quantity, setQuantity] = useState()
 
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product)
+  reduceQuantity(Object.values(storeCart).reduce((a,b) => a+b.quantity,0))
+
 
   useEffect(()=> {
     dispatch(fetchCart(storeCart))
   },[product, quantity])
 
-  const sendView = async () => {
-    let response = await fetch(`/api/cart_detail/`)
-    let data = await response.json()
-    setProduct(Object.keys(data).map(key => ({ id: key, ...data[key] })))
-  }
-
-  useEffect(() => {
-    sendView()
-  }, [])
-  
   const removeProduct =(product_id)=> {
-    console.log(product_id)
     var data = {
       'product_id': product_id
     }
@@ -47,11 +38,10 @@ export default function Cart() {
       console.log('Error 2');
       console.log(error)
     })
-
+    
   }
 
   const increment =(product_id, quantity)=> {
-    
     var data = {
       'product_id': product_id, 
       'update': true,
@@ -68,14 +58,13 @@ export default function Cart() {
       body: JSON.stringify(data)
     })
     .then((response) => {
-      console.log(response)
+      setProduct(product_id)
       setQuantity(quantity)
     })
     .catch(function (error) {
       console.log('Error 2');
       console.log(error)
     })
-
   }
 
   return Object.keys(storeCart).length === 0 ? (

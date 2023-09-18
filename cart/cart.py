@@ -31,10 +31,10 @@ class Cart(object):
     for item in self.cart.values():
       item['total_price'] = float(item['price']) * int(item['quantity'])
       
-  #     yield item
+      yield item
 
-  # def __len__(self):
-  #   return sum(item['quantity'] for item in self.cart.values())
+  def __len__(self):
+    return sum(item['quantity'] for item in self.cart.values())
 
   def add(self, product, quantity=1, update_quantity=False):
     

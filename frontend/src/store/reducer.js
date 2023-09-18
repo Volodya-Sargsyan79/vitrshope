@@ -12,9 +12,9 @@ export const fatchNavBar = createAsyncThunk('menu/fatchNavBar', () => {
         .then((response) => response.data)
 })
 
-export const fetchProduct = createAsyncThunk('product/fetchProduct', () => {
+export const fetchCart = createAsyncThunk('cart/fetchCart', () => {
     return axios
-        .get('http://localhost:8000/api/product?format=json')
+        .get('http://localhost:8000/api/cart_detail')
         .then((response) => response.data)
 })
 
@@ -25,7 +25,7 @@ const menuSlice = createSlice({
         builder.addCase(fatchNavBar.fulfilled, (state, action) => {
             state.menu = action.payload
         })
-        builder.addCase(fetchProduct.fulfilled, (state, action) => {
+        builder.addCase(fetchCart.fulfilled, (state, action) => {
             state.product = action.payload
         })
     }

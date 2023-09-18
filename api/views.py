@@ -56,11 +56,10 @@ def api_add_to_cart(request):
   update = data['update']
   quantity = data['quantity']
   
+  cart = Cart(request)
+  
   product = get_object_or_404(Product, pk=product_id)
  
-
-  cart = Cart(request)
-
   if not update:
     cart.add(product=product, update_quantity=False)
   else:

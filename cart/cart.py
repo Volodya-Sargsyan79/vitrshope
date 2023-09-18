@@ -6,8 +6,6 @@ from django.forms.models import model_to_dict
 class Cart(object):
   def __init__(self, request):
 
-    
-
     self.session = request.session
     cart = self.session.get(settings.CART_SESSION_ID)
 
@@ -26,7 +24,6 @@ class Cart(object):
 
       self.cart[str(p)]['product'] = Product.objects.get(pk=p)
       
-
     for item in self.cart.values():
       item['total_price'] = float(item['price']) * int(item['quantity'])
       
@@ -38,8 +35,9 @@ class Cart(object):
   def add(self, product, quantity=1, update_quantity=False):
     
     product_id = str(product.id)
-    price = product.price
 
+    price = product.price
+    
     product_dict = model_to_dict(product)
 
     if product_id not in self.cart:
@@ -47,8 +45,10 @@ class Cart(object):
 
     if update_quantity:
       self.cart[product_id]['quantity'] = quantity
+      self.cart[product_id]['price'] = price * self.cart[product_id]['quantity']
     else:
       self.cart[product_id]['quantity'] = self.cart[product_id]['quantity'] + 1
+      self.cart[product_id]['price'] = price * self.cart[product_id]['quantity']
 
     self.save()
 

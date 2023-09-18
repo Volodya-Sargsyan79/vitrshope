@@ -1,8 +1,20 @@
 import React, {useState, useEffect} from "react";
+import { useSelector, useDispatch } from "react-redux"
+import { fetchCart } from "../store/reducer"
+
+import Button from "../UI/button"
 
 export default function Cart() {
 
   const [product, setProduct] = useState()
+  const [quantity, setQuantity] = useState()
+
+  const dispatch = useDispatch()
+  const storeCart = useSelector(state => state.data.product)
+
+  useEffect(()=> {
+    dispatch(fetchCart(storeCart))
+  },[product, quantity])
 
   const sendView = async () => {
     let response = await fetch(`/api/cart_detail/`)
@@ -29,7 +41,6 @@ export default function Cart() {
       body: JSON.stringify(data)
     })
     .then((response) => {
-      console.log(response)
       setProduct(product_id)
     })
     .catch(function (error) {
@@ -58,6 +69,7 @@ export default function Cart() {
     })
     .then((response) => {
       console.log(response)
+      setQuantity(quantity)
     })
     .catch(function (error) {
       console.log('Error 2');
@@ -66,28 +78,42 @@ export default function Cart() {
 
   }
 
-  
-  useEffect( () => {
-    const sendView = async () => {
-      let response = await fetch(`/api/cart_detail/`)
-      let data = await response.json()
-      setProduct(Object.keys(data).map(key => ({ id: key, ...data[key] })))
-    }
-    sendView()
-  },[])
-
-
-  return (
-    <div>
-      <h1>Cart</h1>
-      {
-        product?.map((v,i)=>
-          <div key={i}>
-            <p>{v.product.title}</p>
-            <button onClick={() => removeProduct(v.id) }>Remove from cart</button>
-          </div>
-        )
-      }
+  return Object.keys(storeCart).length === 0 ? (
+    <div className="table">
+      <h1 className="title">Cart</h1>
+      <p>Your cart is empty</p>
+    </div>
+  ):(
+    <div className="table">
+      <h1 className="title">Cart</h1>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            Object.values(storeCart)?.map((v,i)=>
+              <tr key={i}>
+                <td>{v.product.title}</td>
+                <td>
+                  {v.quantity}
+                  <Button click={() => increment(v.id, v.quantity) } name='+' />
+                </td>
+                <td>$ {v.price.toFixed(2)}</td>
+                <td>
+                  <Button click={() => removeProduct(v.id) } name='Remove from cart' />
+                </td>
+              </tr>
+            )
+          }
+        </tbody>
+      </table>
+      
     </div>
   )
 }

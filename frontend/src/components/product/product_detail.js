@@ -1,11 +1,21 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom"
 import Button from "../../UI/button";
+import { useSelector, useDispatch } from "react-redux"
+import { fetchCart } from "../../store/reducer"
 
-export default function ProductDetail({reduceQuantity}) {
+export default function ProductDetail() {
+  
   const {slug} = useParams()
 
   const [product, setProduct] = useState({})
+
+  const dispatch = useDispatch()
+  const storeCart = useSelector(state => state.data.product)
+
+  useEffect(()=> {
+    dispatch(fetchCart(storeCart))
+  },[])
   
   const sendView = async (slug) => {
     let response = await fetch(`/api/${slug}/${slug}/`)
@@ -36,7 +46,7 @@ export default function ProductDetail({reduceQuantity}) {
     })
     .then((response) => {
       console.log(response)
-
+      dispatch(fetchCart(storeCart))
     })
     .catch(function (error) {
       console.log('Error 2');

@@ -1,22 +1,17 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux"
-import reducer, { fetchCart } from "../store/reducer"
+import { fetchCart } from "../store/reducer"
 
 import Button from "../UI/button"
 
-export default function Cart({reduceQuantity}) {
-
-  const [product, setProduct] = useState()
-  const [quantity, setQuantity] = useState()
+export default function Cart() {
 
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product)
-  reduceQuantity(Object.values(storeCart).reduce((a,b) => a+b.quantity,0))
-
 
   useEffect(()=> {
     dispatch(fetchCart(storeCart))
-  },[product, quantity])
+  },[])
 
   const removeProduct =(product_id)=> {
     var data = {
@@ -32,13 +27,13 @@ export default function Cart({reduceQuantity}) {
       body: JSON.stringify(data)
     })
     .then((response) => {
-      setProduct(product_id)
+      console.log(response)
+      dispatch(fetchCart(storeCart))
     })
     .catch(function (error) {
       console.log('Error 2');
       console.log(error)
     })
-    
   }
 
   const increment =(product_id, quantity)=> {
@@ -58,8 +53,8 @@ export default function Cart({reduceQuantity}) {
       body: JSON.stringify(data)
     })
     .then((response) => {
-      setProduct(product_id)
-      setQuantity(quantity)
+      console.log(response)
+      dispatch(fetchCart(storeCart))
     })
     .catch(function (error) {
       console.log('Error 2');

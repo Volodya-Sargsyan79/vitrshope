@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { fetchCart } from "../../store/reducer"
 
 export default function NavBar() {
 
   const [category, setCategory] = useState()
 
+  const dispatch = useDispatch()
   const quantity = useSelector(state => state.data.product)
 
   const sendView = async () => {
@@ -15,6 +17,7 @@ export default function NavBar() {
   }
 
   useEffect(() => {
+    dispatch(fetchCart(quantity))
     sendView()
   },[])
 

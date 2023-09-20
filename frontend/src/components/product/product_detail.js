@@ -12,10 +12,6 @@ export default function ProductDetail() {
 
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product)
-
-  useEffect(()=> {
-    dispatch(fetchCart(storeCart))
-  },[])
   
   const sendView = async (slug) => {
     let response = await fetch(`/api/${slug}/${slug}/`)

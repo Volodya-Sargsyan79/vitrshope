@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
 
@@ -8,10 +8,6 @@ export default function Cart() {
 
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product)
-
-  useEffect(()=> {
-    dispatch(fetchCart(storeCart))
-  },[])
 
   const removeProduct =(product_id)=> {
     var data = {

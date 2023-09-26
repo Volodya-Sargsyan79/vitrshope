@@ -23,7 +23,6 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
-
   const addToCart = async ()=> {
 
     var data = {
@@ -50,21 +49,16 @@ export default function ProductDetail() {
     })
   };
 
+  console.log(product.image,33333)
   return (
     <>
-      <div className="column is-2" >
-        <div className="card">
-          <div className="card-content">
-            <div className="media">
-              <div className="media-content">
-                <h1 className="title">{ product.title }</h1>
-                <h2 className="subtitle">{ product.price }</h2>
-                <p>{ product.description }</p>
-                <Button name="Add to cart" click={ addToCart }/>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="productapp" >
+        <img src={product.image} width={1000}/>
+        <hr />
+        <h1 className="title">{ product.title }</h1>
+        <h2 className="subtitle">{ product.price }</h2>
+        <p>{ product.description }</p>
+        <Button name="Add to cart" click={ addToCart }/>
       </div>
     </>
   )

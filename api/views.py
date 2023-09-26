@@ -59,7 +59,7 @@ def api_add_to_cart(request):
   cart = Cart(request)
   
   product = get_object_or_404(Product, pk=product_id)
- 
+
   if not update:
     cart.add(product=product, update_quantity=False)
   else:

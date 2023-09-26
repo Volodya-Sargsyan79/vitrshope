@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core import serializers
 from api.models import Product
 import json
 from django.forms.models import model_to_dict
@@ -6,8 +7,6 @@ from django.forms.models import model_to_dict
 class Cart(object):
 
   def __init__(self, request):
-
-    
 
     self.session = request.session
     cart = self.session.get(settings.CART_SESSION_ID)
@@ -37,15 +36,25 @@ class Cart(object):
     return sum(item['quantity'] for item in self.cart.values())
 
   def add(self, product, quantity=1, update_quantity=False):
+
+    data = {
+        'id': product.id,
+        'category': str(product.category.id),
+        'title': product.title,
+        'slug': product.slug,
+        'description': product.description,
+        'price': product.price,
+        'is_featured': product.is_featured,
+        'image': str(product.image),
+        'thumbnail': str(product.thumbnail),
+    }
     
     product_id = str(product.id)
 
     price = product.price
     
-    product_dict = model_to_dict(product)
-
     if product_id not in self.cart:
-      self.cart[product_id] = {'id': product_id, 'quantity': 0, 'price': price, 'product':product_dict}
+      self.cart[product_id] = {'id': product_id, 'quantity': 0, 'price': price, 'product':data}
     if update_quantity:
       self.cart[product_id]['quantity'] = quantity
       self.cart[product_id]['price'] = price * self.cart[product_id]['quantity']

@@ -17,6 +17,5 @@ urlpatterns = [
    path('cart_detail/', cart_detail, name='cart_detail'),
    path('<slug:category>/<slug:slug>/', product_detail, name="product_detail"),
    path('<slug:slug>/', categoy_detail, name="categoy_detail"),
-   path('categories/category/<int:pk>/', catedory, name="catedory"),
-   
+   path('categories/category/<int:pk>/', catedory, name="catedory"),  
 ]

@@ -16,11 +16,15 @@ export default function Product({ product, category }) {
     sendView(category)
   },[])
 
-
   return (
     <>
-      <div className="column is-2" >
+      <div className="column is-3" >
         <div className="card">
+          <div className="card-image">
+            <figure className="image">
+              <img src={product.thumbnail} />
+            </figure>
+          </div>
           <div className="card-content">
             <div className="media">
               <div className="media-content">

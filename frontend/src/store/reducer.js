@@ -14,7 +14,7 @@ export const fatchNavBar = createAsyncThunk('menu/fatchNavBar', () => {
 
 export const fetchCart = createAsyncThunk('cart/fetchCart', () => {
     return axios
-        .get('http://localhost:8000/api/cart_detail')
+        .get('/api/cart_detail')
         .then((response) => response.data)
 })
 

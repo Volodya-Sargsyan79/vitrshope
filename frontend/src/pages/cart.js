@@ -34,11 +34,13 @@ export default function Cart() {
   }
 
   const increment =(product_id, quantity)=> {
+
     var data = {
       'product_id': product_id, 
       'update': true,
       'quantity': quantity + 1
     }
+
 
     fetch('/api/add_to_cart/', {
       method: 'POST',
@@ -59,6 +61,58 @@ export default function Cart() {
     })
   }
 
+  const decrement =(product_id, quantity)=> {
+
+    if (quantity > 1){
+      var data = {
+        'product_id': product_id, 
+        'update': true,
+        'quantity': quantity - 1
+      }
+  
+      fetch('/api/add_to_cart/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrf_token
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(data)
+      })
+      .then((response) => {
+        console.log(response)
+        dispatch(fetchCart(storeCart))
+      })
+      .catch(function (error) {
+        console.log('Error 2');
+        console.log(error)
+      })
+    }
+    // var data = {
+    //   'product_id': product_id, 
+    //   'update': true,
+    //   'quantity': quantity - 1
+    // }
+
+    // fetch('/api/add_to_cart/', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'X-CSRFToken': csrf_token
+    //   },
+    //   credentials: 'same-origin',
+    //   body: JSON.stringify(data)
+    // })
+    // .then((response) => {
+    //   console.log(response)
+    //   dispatch(fetchCart(storeCart))
+    // })
+    // .catch(function (error) {
+    //   console.log('Error 2');
+    //   console.log(error)
+    // })
+  }
+
   return (
     <div className="table">
       <h1 className="title">Cart</h1>
@@ -77,6 +131,7 @@ export default function Cart() {
               <tr key={i}>
                 <td>{v.title}</td>
                 <td>
+                  <Button click={() => decrement(v.id, v.quantity) } name='-' />
                   {v.quantity}
                   <Button click={() => increment(v.id, v.quantity) } name='+' />
                 </td>

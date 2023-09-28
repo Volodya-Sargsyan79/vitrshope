@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
 
+import '../styles/styles.scss'
 import Button from "../UI/button"
 
 export default function Cart() {
@@ -57,10 +58,6 @@ export default function Cart() {
       console.log(error)
     })
   }
-
-  // useEffect(() => {
-  //   dispatch(fetchCart(storeCart))
-  // },[])
 
   return (
     <div className="table">

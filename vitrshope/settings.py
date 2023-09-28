@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'frontend.apps.FrontendConfig',
     'cart.apps.CartConfig',
+    'order.apps.OrderConfig',
     'rest_framework',
 ]
 

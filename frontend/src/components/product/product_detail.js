@@ -49,7 +49,6 @@ export default function ProductDetail() {
     })
   };
 
-  console.log(product.image,33333)
   return (
     <>
       <div className="productapp" >

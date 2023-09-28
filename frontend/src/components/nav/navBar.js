@@ -8,7 +8,7 @@ export default function NavBar() {
   const [category, setCategory] = useState()
 
   const dispatch = useDispatch()
-  const quantity = useSelector(state => state.data.product)
+  const quantity = useSelector(state => state.data.product.cart_funct?.total_quantity)
 
   const sendView = async () => {
     let response = await fetch('/api/categories/')
@@ -40,7 +40,7 @@ export default function NavBar() {
             )
           }
           <div className="navbar-item" id="navbarapp">
-            <Link to="cart/" className="button is-primary">Cart ({Object.values(quantity).reduce((a,b) => a+b.quantity,0)})</Link>
+            <Link to="cart/" className="button is-primary">Cart ({quantity})</Link>
           </div>          
         </div>
       </div>

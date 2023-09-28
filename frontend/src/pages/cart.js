@@ -7,7 +7,7 @@ import Button from "../UI/button"
 export default function Cart() {
 
   const dispatch = useDispatch()
-  const storeCart = useSelector(state => state.data.product)
+  const storeCart = useSelector(state => state.data.product) || {}
 
   const removeProduct =(product_id)=> {
     var data = {
@@ -58,12 +58,11 @@ export default function Cart() {
     })
   }
 
-  return Object.keys(storeCart).length === 0 ? (
-    <div className="table">
-      <h1 className="title">Cart</h1>
-      <p>Your cart is empty</p>
-    </div>
-  ):(
+  // useEffect(() => {
+  //   dispatch(fetchCart(storeCart))
+  // },[])
+
+  return (
     <div className="table">
       <h1 className="title">Cart</h1>
       <table className="table">
@@ -77,14 +76,14 @@ export default function Cart() {
         </thead>
         <tbody>
           {
-            Object.values(storeCart)?.map((v,i)=>
+            storeCart.productsstring && Object.values(storeCart.productsstring)?.map((v,i)=>
               <tr key={i}>
-                <td>{v.product.title}</td>
+                <td>{v.title}</td>
                 <td>
                   {v.quantity}
                   <Button click={() => increment(v.id, v.quantity) } name='+' />
                 </td>
-                <td>$ {v.price.toFixed(2)}</td>
+                <td>$ {v.total_price.toFixed(2)}</td>
                 <td>
                   <Button click={() => removeProduct(v.id) } name='Remove from cart' />
                 </td>
@@ -92,6 +91,13 @@ export default function Cart() {
             )
           }
         </tbody>
+        <tfoot>
+          <tr>
+            <td>Total cost:</td>
+            <td>{storeCart.cart_funct?.total_quantity}</td>
+            <td>$ {storeCart.cart_funct?.total_cost.toFixed(2)}</td>
+          </tr>
+        </tfoot>
       </table>
       
     </div>

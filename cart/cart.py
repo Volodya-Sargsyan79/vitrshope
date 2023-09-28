@@ -25,7 +25,6 @@ class Cart(object):
       product_clean_ids.append(p)
 
       self.cart[str(p)]['product'] = Product.objects.get(pk=p)
-      
 
     for item in self.cart.values():
       item['total_price'] = float(item['price']) * int(item['quantity'])
@@ -37,30 +36,17 @@ class Cart(object):
 
   def add(self, product, quantity=1, update_quantity=False):
 
-    data = {
-        'id': product.id,
-        'category': str(product.category.id),
-        'title': product.title,
-        'slug': product.slug,
-        'description': product.description,
-        'price': product.price,
-        'is_featured': product.is_featured,
-        'image': str(product.image),
-        'thumbnail': str(product.thumbnail),
-    }
-    
     product_id = str(product.id)
 
     price = product.price
     
     if product_id not in self.cart:
-      self.cart[product_id] = {'id': product_id, 'quantity': 0, 'price': price, 'product':data}
+      self.cart[product_id] = {'id': product_id, 'quantity': 0, 'price': price}
+
     if update_quantity:
       self.cart[product_id]['quantity'] = quantity
-      self.cart[product_id]['price'] = price * self.cart[product_id]['quantity']
     else:
       self.cart[product_id]['quantity'] = self.cart[product_id]['quantity'] + 1
-      self.cart[product_id]['price'] = price * self.cart[product_id]['quantity']
 
     self.save()
 
@@ -75,3 +61,6 @@ class Cart(object):
 
   def get_total_length(self):
     return sum(int(item['quantity']) for item in self.cart.values())
+  
+  def get_total_cost(self):
+    return sum(float(item['total_price']) for item in self.cart.values())

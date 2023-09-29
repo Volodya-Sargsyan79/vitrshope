@@ -9,6 +9,9 @@ from cart.cart import Cart
 from django.http import JsonResponse
 from django.contrib.sessions.models import Session
 
+from order.utils import checkout
+from order.models import Order, OrderItem
+
 # Create your views here.
 
 class ProductView(generics.ListAPIView):
@@ -47,6 +50,35 @@ def catedory(request, pk):
   serializer_class = CategorySerializer(queryset, many=False)
   
   return Response(serializer_class.data)
+
+def api_checkout(request):
+  cart = Cart(request)
+
+  data = json.loads(request.body)
+  jsonresponse = {'success': True}
+  first_name = data['first_name']
+  last_name = data['last_name']
+  email = data['email']
+  address = data['address']
+  zipcode = data['zipcode']
+  place = data['place']
+  
+  
+
+  orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
+
+
+  paid = True
+
+  if paid == True:
+    order = Order.objects.get(pk=orderid)
+    order.paid = True
+    order.paid_amount = cart.get_total_cost()
+    order.save()
+
+    cart.clear()
+
+  return JsonResponse(jsonresponse)
 
 def api_add_to_cart(request):
 

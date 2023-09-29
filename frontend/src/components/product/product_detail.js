@@ -57,7 +57,7 @@ export default function ProductDetail() {
         <h1 className="title">{ product.title }</h1>
         <h2 className="subtitle">{ product.price }</h2>
         <p>{ product.description }</p>
-        <Button name="Add to cart" click={ addToCart }/>
+        <Button name="Add to cart" classes='' click={ addToCart }/>
       </div>
     </>
   )

@@ -8,8 +8,6 @@ from .models import Order, OrderItem
 
 def checkout(request, first_name, last_name, email, address, zipcode, place):
 
-  print(first_name, last_name, email, address, zipcode, place,  222222)
-
   order = Order(first_name=first_name, last_name=last_name, email=email, address=address, zipcode=zipcode, place=place)
   order.save()
 

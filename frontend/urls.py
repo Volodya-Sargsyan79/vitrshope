@@ -8,4 +8,5 @@ urlpatterns = [
     path('<slug:slug>/', index, name='category_detail'),
     path('about/', index, name='about'),
     path('cart/', index, name='cart_detail'),
+    path('cart/success/', index, name='success'),
 ]

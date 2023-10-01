@@ -2,6 +2,8 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
 
+import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
+
 import '../styles/styles.scss'
 import Button from "../UI/button"
 import Input from "../UI/input";
@@ -10,6 +12,9 @@ export default function Cart() {
 
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product) || {}
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   const removeProduct =(product_id)=> {
     var data = {
@@ -120,10 +125,38 @@ export default function Cart() {
       console.log('Error 2');
       console.log(error)
     })
-
-    console.log(data)
-
     e.preventDefault();
+  }
+
+  const bay = () => {
+
+    if (!stripe || !elements){
+      return;
+    }
+
+    fetch('/api/create_checkout_session/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrf_token
+      },
+      credentials: 'same-origin',
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((session) => {
+      window.location.href = session.session.url
+    })
+    .then((result) => {
+      if (result.error) {
+        alert(result.error.message)
+      }
+    })
+    .catch(function (error) {
+      console.log('Error:', error);
+    })
+
   }
 
   return (
@@ -207,6 +240,7 @@ export default function Cart() {
           </div>
         </div>
       </form>
+      <Button click={bay} classes='button is-primary' name='Check out' />
     </div>
   )
 }

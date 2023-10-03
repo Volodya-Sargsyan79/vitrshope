@@ -1,16 +1,20 @@
 import json
-from django.shortcuts import render, get_object_or_404
+import stripe
+
+from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer
-from .models import Product, Category
 from rest_framework.decorators import api_view
-from cart.cart import Cart
-from django.http import JsonResponse
-from django.contrib.sessions.models import Session
 
+from .serializers import ProductSerializer, CategorySerializer
+
+from .models import Product, Category
+from order.models import Order
 from order.utils import checkout
-from order.models import Order, OrderItem
+from cart.cart import Cart
 
 # Create your views here.
 
@@ -50,6 +54,40 @@ def catedory(request, pk):
   serializer_class = CategorySerializer(queryset, many=False)
   
   return Response(serializer_class.data)
+
+def create_checkout_session(request):
+  cart = Cart(request)
+
+  stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
+
+  items = []
+
+  for item in cart:
+    product = item['product']
+
+    obj = {
+      'price_data': {
+        'currency': 'usd',
+        'product_data': {
+          'name': product.title
+        },
+        'unit_amount': int(product.price * 100)
+      },
+      'quantity': item['quantity']
+    }
+
+    items.append(obj)
+
+  session = stripe.checkout.Session.create(
+    payment_method_types = ['card'],
+    line_items = items,
+    mode = 'payment',
+    success_url = 'http://127.0.0.1:8000/cart/success/',
+    cancel_url = 'http://127.0.0.1:8000/cart/'
+  )
+
+  return JsonResponse({'session': session})
+
 
 def api_checkout(request):
   cart = Cart(request)
@@ -108,34 +146,3 @@ def api_remove_from_cart(request):
   cart.remove(product_id)
 
   return JsonResponse(jsonresponse)
-
-
-def cart_detail(request):
-  cart = Cart(request)
-  productsstring = {}
-
-  for item in cart:
-    product = item['product']
-
-    product_id = str(product.id)
-
-    if product_id not in productsstring:
-      productsstring[product_id] = {
-        'id': product.id, 
-        'title': product.title, 
-        'price': product.price, 
-        'quantity': item['quantity'], 
-        'total_price': item['total_price'],
-      }
-
-  cart_funct = {
-    'total_quantity': cart.get_total_length(),
-    'total_cost': cart.get_total_cost()
-  }
-
-  statment = {
-    'cart_funct': cart_funct,
-    'productsstring': productsstring
-  }
-
-  return JsonResponse(statment)

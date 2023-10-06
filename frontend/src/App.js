@@ -11,26 +11,7 @@ import About from "./pages/about";
 import Cart from "./pages/cart";
 import Success from "./pages/success";
 
-import { useSelector } from "react-redux"
-
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
-
-
-
-
-
 export default function App() {
-
-    // const storeCart = useSelector(state => state.data.product) || {}
-
-    // const stripePromise = loadStripe(storeCart?.pub_key);
-
-    // const options = {
-    //     // passing the client secret obtained from the server
-    //     clientSecret: '{{CLIENT_SECRET}}',
-    //   };
-    
     return (
         <div  >
             <NavBar />

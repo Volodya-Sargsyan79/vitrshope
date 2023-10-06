@@ -96,8 +96,40 @@ export default function Cart() {
     }
   }
 
-  const addClient =(e)=> {
+  // const addClient =(e)=> {
     
+  //   var data = {
+  //     'first_name': e.target.first_name.value,
+  //     'last_name': e.target.last_name.value,
+  //     'email': e.target.email.value,
+  //     'address': e.target.address.value,
+  //     'zipcode': e.target.zipcode.value,
+  //     'place': e.target.place.value,
+  //   }
+    
+  //   fetch('/api/api_checkout/', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'X-CSRFToken': csrf_token
+  //     },
+  //     credentials: 'same-origin',
+  //     body: JSON.stringify(data)
+  //   })
+  //   .then((response) => {
+  //     console.log('Success')
+  //     console.log(response)
+  //     window.location.href = '/'
+  //   })
+  //   .catch(function (error) {
+  //     console.log('Error 2');
+  //     console.log(error)
+  //   })
+  //   e.preventDefault();
+  // }
+
+  const bay = (e) => {
+    e.preventDefault();
     var data = {
       'first_name': e.target.first_name.value,
       'last_name': e.target.last_name.value,
@@ -106,29 +138,6 @@ export default function Cart() {
       'zipcode': e.target.zipcode.value,
       'place': e.target.place.value,
     }
-    
-    fetch('/api/api_checkout/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrf_token
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify(data)
-    })
-    .then((response) => {
-      console.log('Success')
-      console.log(response)
-      window.location.href = '/'
-    })
-    .catch(function (error) {
-      console.log('Error 2');
-      console.log(error)
-    })
-    e.preventDefault();
-  }
-
-  const bay = () => {
 
     if (!stripe || !elements){
       return;
@@ -141,11 +150,13 @@ export default function Cart() {
         'X-CSRFToken': csrf_token
       },
       credentials: 'same-origin',
+      body: JSON.stringify(data)
     })
     .then((response) => {
       return response.json()
     })
     .then((session) => {
+      console.log(session)
       window.location.href = session.session.url
     })
     .then((result) => {
@@ -197,7 +208,7 @@ export default function Cart() {
           </tr>
         </tfoot>
       </table>
-      <form onSubmit={addClient}>
+      <form onSubmit={bay}>
         <div className="field">
           <div className="control">
             <label>First name </label>
@@ -236,11 +247,11 @@ export default function Cart() {
         </div>
         <div className="field">
           <div className="control">
-            <Button classes='button is-primary' name='Check out'/>
+            <Button type='submit' classes='button is-primary' name='Check out' />
           </div>
         </div>
       </form>
-      <Button click={bay} classes='button is-primary' name='Check out' />
+     
     </div>
   )
 }

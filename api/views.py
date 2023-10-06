@@ -16,6 +16,9 @@ from order.models import Order
 from order.utils import checkout
 from cart.cart import Cart
 
+from cart.webhook import webhook
+
+
 # Create your views here.
 
 class ProductView(generics.ListAPIView):
@@ -86,6 +89,27 @@ def create_checkout_session(request):
     cancel_url = 'http://127.0.0.1:8000/cart/'
   )
 
+  print(session, 222222)
+  """
+    cs_test_a1STRNqiM3oWY9s7ut6uUOUggEIpyXkQvqc1TdfH7snSf8kFIhkLHlcCgh
+  """
+
+  data = json.loads(request.body)
+  first_name = data['first_name']
+  last_name = data['last_name']
+  email = data['email']
+  address = data['address']
+  zipcode = data['zipcode']
+  place = data['place']
+  payment_intent = session.id
+  session.payment_intent = session.id
+  orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
+
+  order = Order.objects.get(pk=orderid)
+  order.payment_intent = payment_intent
+  order.paid_amount = cart.get_total_cost()
+  order.save()
+
   return JsonResponse({'session': session})
 
 
@@ -100,11 +124,8 @@ def api_checkout(request):
   address = data['address']
   zipcode = data['zipcode']
   place = data['place']
-  
-  
 
   orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
-
 
   paid = True
 

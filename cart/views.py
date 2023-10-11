@@ -34,4 +34,5 @@ def cart_detail(request):
     'productsstring': productsstring
   }
 
+
   return JsonResponse(context)

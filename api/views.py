@@ -18,7 +18,6 @@ from cart.cart import Cart
 
 from cart.webhook import webhook
 
-
 # Create your views here.
 
 class ProductView(generics.ListAPIView):
@@ -63,81 +62,61 @@ def create_checkout_session(request):
 
   stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
 
-  items = []
+  # items = []
 
   for item in cart:
     product = item['product']
+    
 
-    obj = {
-      'price_data': {
-        'currency': 'usd',
-        'product_data': {
-          'name': product.title
-        },
-        'unit_amount': int(product.price * 100)
-      },
-      'quantity': item['quantity']
+    # obj = {
+    #   'price_data': {
+    #     'currency': 'usd',
+    #     'product_data': {
+    #       'name': product.title,
+    #     },
+    #     'unit_amount': int(product.price * 100)
+    #   },
+    #   'quantity' =  item['quantity'],
+    # }
+
+    # items.append(obj)
+
+  # session = stripe.checkout.Session.create(
+  #   payment_method_types = ['card'],
+  #   line_items = items,
+  #   mode = 'payment',
+  #   success_url = 'http://127.0.0.1:8000/cart/success/',
+  #   cancel_url = 'http://127.0.0.1:8000/cart/'
+  # )
+
+  session = stripe.PaymentIntent.create(
+    currency = 'usd',
+    amount = int(cart.get_total_cost() * 100),
+    automatic_payment_methods = {
+      'enabled': True
     }
-
-    items.append(obj)
-
-  session = stripe.checkout.Session.create(
-    payment_method_types = ['card'],
-    line_items = items,
-    mode = 'payment',
-    success_url = 'http://127.0.0.1:8000/cart/success/',
-    cancel_url = 'http://127.0.0.1:8000/cart/'
   )
 
-  print(session, 222222)
-  """
-    cs_test_a1STRNqiM3oWY9s7ut6uUOUggEIpyXkQvqc1TdfH7snSf8kFIhkLHlcCgh
-  """
-
   data = json.loads(request.body)
-  first_name = data['first_name']
-  last_name = data['last_name']
-  email = data['email']
-  address = data['address']
-  zipcode = data['zipcode']
-  place = data['place']
-  payment_intent = session.id
-  session.payment_intent = session.id
-  orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
 
-  order = Order.objects.get(pk=orderid)
-  order.payment_intent = payment_intent
-  order.paid_amount = cart.get_total_cost()
-  order.save()
+  if data:
+    first_name = data['first_name']
+    last_name = data['last_name']
+    email = data['email']
+    address = data['address']
+    zipcode = data['zipcode']
+    place = data['place']
+    payment_intent = session.id
+    orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
 
-  return JsonResponse({'session': session})
-
-
-def api_checkout(request):
-  cart = Cart(request)
-
-  data = json.loads(request.body)
-  jsonresponse = {'success': True}
-  first_name = data['first_name']
-  last_name = data['last_name']
-  email = data['email']
-  address = data['address']
-  zipcode = data['zipcode']
-  place = data['place']
-
-  orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
-
-  paid = True
-
-  if paid == True:
     order = Order.objects.get(pk=orderid)
+    order.payment_intent = payment_intent
     order.paid = True
     order.paid_amount = cart.get_total_cost()
     order.save()
 
     cart.clear()
-
-  return JsonResponse(jsonresponse)
+  return JsonResponse({'session': session})
 
 def api_add_to_cart(request):
 

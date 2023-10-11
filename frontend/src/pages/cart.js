@@ -1,20 +1,17 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
+import { useNavigate } from "react-router"
 
-import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
+import Button from "../UI/button"
 
 import '../styles/styles.scss'
-import Button from "../UI/button"
-import Input from "../UI/input";
 
 export default function Cart() {
 
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.product) || {}
-
-  const stripe = useStripe();
-  const elements = useElements();
 
   const removeProduct =(product_id)=> {
     var data = {
@@ -96,79 +93,6 @@ export default function Cart() {
     }
   }
 
-  // const addClient =(e)=> {
-    
-  //   var data = {
-  //     'first_name': e.target.first_name.value,
-  //     'last_name': e.target.last_name.value,
-  //     'email': e.target.email.value,
-  //     'address': e.target.address.value,
-  //     'zipcode': e.target.zipcode.value,
-  //     'place': e.target.place.value,
-  //   }
-    
-  //   fetch('/api/api_checkout/', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-CSRFToken': csrf_token
-  //     },
-  //     credentials: 'same-origin',
-  //     body: JSON.stringify(data)
-  //   })
-  //   .then((response) => {
-  //     console.log('Success')
-  //     console.log(response)
-  //     window.location.href = '/'
-  //   })
-  //   .catch(function (error) {
-  //     console.log('Error 2');
-  //     console.log(error)
-  //   })
-  //   e.preventDefault();
-  // }
-
-  const bay = (e) => {
-    e.preventDefault();
-    var data = {
-      'first_name': e.target.first_name.value,
-      'last_name': e.target.last_name.value,
-      'email': e.target.email.value,
-      'address': e.target.address.value,
-      'zipcode': e.target.zipcode.value,
-      'place': e.target.place.value,
-    }
-
-    if (!stripe || !elements){
-      return;
-    }
-
-    fetch('/api/create_checkout_session/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrf_token
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify(data)
-    })
-    .then((response) => {
-      return response.json()
-    })
-    .then((session) => {
-      console.log(session)
-      window.location.href = session.session.url
-    })
-    .then((result) => {
-      if (result.error) {
-        alert(result.error.message)
-      }
-    })
-    .catch(function (error) {
-      console.log('Error:', error);
-    })
-
-  }
 
   return (
     <div className="table">
@@ -208,50 +132,7 @@ export default function Cart() {
           </tr>
         </tfoot>
       </table>
-      <form onSubmit={bay}>
-        <div className="field">
-          <div className="control">
-            <label>First name </label>
-            <Input type='text' name='first_name' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <label>Last name </label>
-            <Input type='text' name='last_name' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <label>E-mail </label>
-            <Input type='text' name='email' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <label>Address </label>
-            <Input type='text' name='address' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <label>Zip code </label>
-            <Input type='text' name='zipcode' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <label>Place </label>
-            <Input type='text' name='place' classes=''/>
-          </div>
-        </div>
-        <div className="field">
-          <div className="control">
-            <Button type='submit' classes='button is-primary' name='Check out' />
-          </div>
-        </div>
-      </form>
-     
+      <Button click={()=>navigate('checkout')} type='button' classes='button is-primary' name='Pay' />
     </div>
   )
 }

@@ -4,24 +4,23 @@ from django.http import JsonResponse
 
 from .cart import Cart
 
-
 def cart_detail(request):
   cart = Cart(request)
-  productsstring = {}
+  # productsstring = {}
 
-  for item in cart:
-    product = item['product']
+  # for item in cart:
+  #   product = item['product']
 
-    product_id = str(product.id)
+  #   product_id = str(product.id)
 
-    if product_id not in productsstring:
-      productsstring[product_id] = {
-        'id': product.id, 
-        'title': product.title, 
-        'price': product.price, 
-        'quantity': item['quantity'], 
-        'total_price': item['total_price'],
-      }
+  #   if product_id not in productsstring:
+  #     productsstring[product_id] = {
+  #       'id': product.id, 
+  #       'title': product.title, 
+  #       'price': product.price, 
+  #       'quantity': item['quantity'], 
+  #       'total_price': item['total_price'],
+  #     }
 
   cart_funct = {
     'total_quantity': cart.get_total_length(),
@@ -29,10 +28,9 @@ def cart_detail(request):
   }
 
   context = {
-    'cart_funct': cart_funct,
-    'pub_key': settings.STRIPE_API_KEY_PUBLISHABLE,
-    'productsstring': productsstring
+    'cart': list(cart),
+    'cart_funct': cart_funct
   }
 
-
+  
   return JsonResponse(context)

@@ -4,11 +4,12 @@ from .views import ProductView, \
    product_detail, \
    categoy_detail, \
    catedory, \
-   api_add_to_cart, \
    api_remove_from_cart, \
    create_checkout_session
 from cart.views import cart_detail
 from cart.webhook import webhook
+
+from cart.api import api_add_to_cart
 
 
 urlpatterns = [

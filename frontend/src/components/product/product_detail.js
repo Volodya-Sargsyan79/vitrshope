@@ -11,7 +11,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState({})
 
   const dispatch = useDispatch()
-  const storeCart = useSelector(state => state.data.product)
+  const storeCart = useSelector(state => state.data.cart)
   
   const sendView = async (slug) => {
     let response = await fetch(`/api/${slug}/${slug}/`)
@@ -23,10 +23,10 @@ export default function ProductDetail() {
     sendView(slug)
   },[])
 
-  const addToCart = async ()=> {
+  const addToCart = async (product_id)=> {
 
     var data = {
-      'product_id': product.id, 
+      'product_id': product_id, 
       'update': false,
       'quantity': 1
     }
@@ -52,12 +52,12 @@ export default function ProductDetail() {
   return (
     <>
       <div className="productapp" >
-        <img src={product.image} width={1000}/>
+        <img src={product.image} width={500}/>
         <hr />
         <h1 className="title">{ product.title }</h1>
         <h2 className="subtitle">{ product.price }</h2>
         <p>{ product.description }</p>
-        <Button name="Add to cart" classes='' click={ addToCart }/>
+        <Button name="Add to cart" classes='' click={ addToCart.bind(this, product.id) }/>
       </div>
     </>
   )

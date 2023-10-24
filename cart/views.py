@@ -20,7 +20,7 @@ def cart_detail(request):
   context = {
     'cart_funct': cart_funct,
     'pub_key': settings.STRIPE_API_KEY_PUBLISHABLE,
-    'productsstring': cart.cart
+    'cart': cart.cart
   }
 
 

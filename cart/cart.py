@@ -1,13 +1,10 @@
 from django.conf import settings
 from django.core import serializers
 from api.models import Product
-import json
-from django.forms.models import model_to_dict
 
 class Cart(object):
 
   def __init__(self, request):
-
     self.session = request.session
     cart = self.session.get(settings.CART_SESSION_ID)
 
@@ -23,8 +20,10 @@ class Cart(object):
 
     for p in product_ids:
       product_clean_ids.append(p)
-
-      self.cart[str(p)]['product'] = Product.objects.get(pk=p)
+      product_data = self.cart[str(p)]
+      queryset = Product.objects.get(pk=p)
+      product_data['product'] = queryset
+      product_data['total_price'] = float(product_data['price']) * int(product_data['quantity'])
 
     for item in self.cart.values():
       item['total_price'] = float(item['price']) * int(item['quantity'])
@@ -35,9 +34,7 @@ class Cart(object):
     return sum(item['quantity'] for item in self.cart.values())
 
   def add(self, product, quantity=1, update_quantity=False):
-
     product_id = str(product.id)
-
     price = product.price
     
     if product_id not in self.cart:

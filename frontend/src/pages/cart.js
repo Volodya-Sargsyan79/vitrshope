@@ -108,9 +108,9 @@ export default function Cart() {
         </thead>
         <tbody>
           {
-            storeCart.productsstring && Object.values(storeCart.productsstring)?.map((v,i)=>
+            storeCart.cart && Object.values(storeCart.cart)?.map((v,i)=>
               <tr key={i}>
-                <td>{v.title}</td>
+                <td>{v.product.title}</td>
                 <td>
                   <Button click={() => decrement(v.id, v.quantity) } classes='' name='-' />
                   {v.quantity}

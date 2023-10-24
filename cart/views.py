@@ -1,38 +1,26 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
+from api.serializers import ProductSerializer
 
 from .cart import Cart
 
-
 def cart_detail(request):
-  cart = Cart(request)
-  productsstring = {}
-
-  for item in cart:
-    product = item['product']
-
-    product_id = str(product.id)
-
-    if product_id not in productsstring:
-      productsstring[product_id] = {
-        'id': product.id, 
-        'title': product.title, 
-        'price': product.price, 
-        'quantity': item['quantity'], 
-        'total_price': item['total_price'],
-      }
-
+  cart = Cart(request)  
+  
   cart_funct = {
     'total_quantity': cart.get_total_length(),
-    'total_cost': cart.get_total_cost()
+    'total_cost': sum(float(item['total_price']) for item in list(cart))
   }
+
+  for item in cart:
+    serializer_class = ProductSerializer(item['product'], many=False)
+    item['product'] = serializer_class.data
 
   context = {
     'cart_funct': cart_funct,
     'pub_key': settings.STRIPE_API_KEY_PUBLISHABLE,
-    'productsstring': productsstring
+    'cart': cart.cart
   }
-
-
+ 
   return JsonResponse(context)

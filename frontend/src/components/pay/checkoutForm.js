@@ -32,9 +32,7 @@ export default function CheckoutForm() {
       'zipcode': e.target.zipcode.value,
       'place': e.target.place.value,
     }
-
- 
-
+    
     fetch('/api/create_checkout_session/', {
       method: 'POST',
       headers: {

@@ -8,7 +8,7 @@ export default function NavBar() {
   const [category, setCategory] = useState()
 
   const dispatch = useDispatch()
-  const quantity = useSelector(state => state.data.product.cart_funct?.total_quantity)
+  const quantity = useSelector(state => state.data.cart.cart_funct?.total_quantity)
 
   const sendView = async () => {
     let response = await fetch('/api/categories/')

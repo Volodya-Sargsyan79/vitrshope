@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 STRIPE_API_KEY_PUBLISHABLE = 'pk_test_51Nvc1wBcoMlTXU6JcpUZC1GxDNavahLVsgryjo1XoyUMcR2GCpha2j6elMwgrwFy2K17w6mFs92V1GT7cStVpYz200ulaZsfSU'
 STRIPE_API_KEY_HIDDEN = 'sk_test_51Nvc1wBcoMlTXU6JfHfbJyxaZ3Fxd6aIepnUGapxDqYIlDyMivqL8yKAtHRnlnXhOkUnvd0BhfMha7bXW9OW7sad002tLu9gnP'
 
+
 from pathlib import Path
 import os
 

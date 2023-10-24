@@ -6,8 +6,8 @@ from api.serializers import ProductSerializer
 from .cart import Cart
 
 def cart_detail(request):
-  cart = Cart(request)  
-  
+  cart = Cart(request)
+
   cart_funct = {
     'total_quantity': cart.get_total_length(),
     'total_cost': sum(float(item['total_price']) for item in list(cart))
@@ -20,7 +20,8 @@ def cart_detail(request):
   context = {
     'cart_funct': cart_funct,
     'pub_key': settings.STRIPE_API_KEY_PUBLISHABLE,
-    'cart': cart.cart
+    'productsstring': cart.cart
   }
- 
+
+
   return JsonResponse(context)

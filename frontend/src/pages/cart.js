@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
 import { useNavigate } from "react-router"
@@ -11,7 +11,11 @@ export default function Cart() {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const storeCart = useSelector(state => state.data.product) || {}
+  const storeCart = useSelector(state => state.data.cart)
+
+  useEffect(() => {
+    dispatch(fetchCart(storeCart))
+  },[])
 
   const removeProduct =(product_id)=> {
     var data = {
@@ -43,7 +47,6 @@ export default function Cart() {
       'update': true,
       'quantity': quantity + 1
     }
-
 
     fetch('/api/add_to_cart/', {
       method: 'POST',
@@ -108,9 +111,9 @@ export default function Cart() {
         </thead>
         <tbody>
           {
-            storeCart.cart && Object.values(storeCart.cart)?.map((v,i)=>
+            storeCart.productsstring && Object.values(storeCart.productsstring)?.map((v,i)=>
               <tr key={i}>
-                <td>{v.product.title}</td>
+                <td>{v.title}</td>
                 <td>
                   <Button click={() => decrement(v.id, v.quantity) } classes='' name='-' />
                   {v.quantity}

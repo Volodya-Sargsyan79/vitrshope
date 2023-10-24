@@ -3,7 +3,7 @@ import axios from "axios"
 
 const initialState = {
     menu: [],
-    product: [],
+    cart: [],
 }
 
 export const fatchNavBar = createAsyncThunk('menu/fatchNavBar', () => {
@@ -26,7 +26,7 @@ const menuSlice = createSlice({
             state.menu = action.payload
         })
         builder.addCase(fetchCart.fulfilled, (state, action) => {
-            state.product = action.payload
+            state.cart = action.payload
         })
     }
 })

@@ -20,8 +20,10 @@ class Cart(object):
 
     for p in product_ids:
       product_clean_ids.append(p)
-
-      self.cart[str(p)]['product'] = Product.objects.get(pk=p)
+      product_data = self.cart[str(p)]
+      queryset = Product.objects.get(pk=p)
+      product_data['product'] = queryset
+      product_data['total_price'] = float(product_data['price']) * int(product_data['quantity'])
 
     for item in self.cart.values():
       item['total_price'] = float(item['price']) * int(item['quantity'])

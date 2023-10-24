@@ -113,7 +113,7 @@ export default function Cart() {
           {
             storeCart.productsstring && Object.values(storeCart.productsstring)?.map((v,i)=>
               <tr key={i}>
-                <td>{v.title}</td>
+                <td>{v.product.title}</td>
                 <td>
                   <Button click={() => decrement(v.id, v.quantity) } classes='' name='-' />
                   {v.quantity}

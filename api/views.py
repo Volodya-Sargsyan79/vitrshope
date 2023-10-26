@@ -13,6 +13,7 @@ from .serializers import ProductSerializer, CategorySerializer
 
 from .models import Product, Category
 from order.models import Order
+from coupon.models import Coupon
 from order.utils import checkout
 from cart.cart import Cart
 
@@ -58,20 +59,44 @@ def catedory(request, pk):
   return Response(serializer_class.data)
 
 def create_checkout_session(request):
+  data = json.loads(request.body)
   cart = Cart(request)
+
+  price = sum(float(item['total_price']) for item in list(cart))
+
+  if data:
+    coupon_code = data['coupon_code']
+    coupon_value = 0
+
+    if coupon_code != "":
+      coupon = Coupon.objects.get(code = coupon_code)
+
+      
+
+      if coupon.can_use():
+        coupon_value = coupon.value
+        
+        coupon.use()
+
+    
+
+    if coupon_value > 0:
+      price = price * (int(coupon_value) / 100) 
+      
+  print(price, 555555555)
 
   stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
 
   session = stripe.PaymentIntent.create(
     currency = 'usd',
-    amount = sum(int(item['total_price']) for item in list(cart)) * 100,
+    amount = price * 100,
     automatic_payment_methods = {
       'enabled': True
     }
   )
 
 
-  data = json.loads(request.body)
+ 
 
   if data:
     first_name = data['first_name']
@@ -86,7 +111,8 @@ def create_checkout_session(request):
     order = Order.objects.get(pk=orderid)
     order.payment_intent = payment_intent
     order.paid = True
-    order.paid_amount = sum(float(item['total_price']) for item in list(cart))
+    order.paid_amount = price
+    order.used_coupon = coupon_code
     order.save()
 
     cart.clear()

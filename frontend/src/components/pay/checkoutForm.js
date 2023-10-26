@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router"
+import { useLocation } from 'react-router-dom';
 
 import Button from "../../UI/button";
 import Items from "../elements/items";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({couponCode}) {
 
   const stripe = useStripe()
   const elements = useElements()
   const navigate = useNavigate()
+  const location = useLocation();
+  
+
+  console.log(location.state,2222)
 
   const [message, setMessage] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -31,6 +36,7 @@ export default function CheckoutForm() {
       'address': e.target.address.value,
       'zipcode': e.target.zipcode.value,
       'place': e.target.place.value,
+      'coupon_code': location.state
     }
     
     fetch('/api/create_checkout_session/', {

@@ -1,9 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux"
 import { fetchCart } from "../store/reducer"
 import { useNavigate } from "react-router"
 
 import Button from "../UI/button"
+import Items from "../components/elements/items";
 
 import '../styles/styles.scss'
 
@@ -12,6 +13,8 @@ export default function Cart() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.cart)
+  const [couponValue, setCouponValue] = useState(0)
+  const [couponCode, setCouponCode] = useState("")
 
   useEffect(() => {
     dispatch(fetchCart(storeCart))
@@ -96,6 +99,26 @@ export default function Cart() {
     }
   }
 
+  const applyCoupon =(e)=> {
+    e.preventDefault();
+    if (e.target.coupon_code.value !== ""){
+      fetch('/api/can_use/?coupon_code=' + e.target.coupon_code.value, {
+        method: 'GET'
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data.amount) {
+          setCouponValue(parseInt(data.amount))
+          setCouponCode(data.coupon)
+        } else {
+          setCouponValue(0)
+          setCouponCode('')
+        }
+      })
+    }
+  }
 
   return (
     <div className="table">
@@ -139,9 +162,22 @@ export default function Cart() {
                   <td>{storeCart.cart_funct?.total_quantity}</td>
                   <td>$ {storeCart.cart_funct?.total_cost.toFixed(2)}</td>
                 </tr>
+                {
+                  couponValue > 0
+                  ? <tr>
+                      <td colSpan="2">Total cost with coupon:</td>
+                      <td>$ {(storeCart.cart_funct?.total_cost * (couponValue / 100)).toFixed(2)}</td>
+                    </tr>
+                  : ''
+                }
               </tfoot>
             </table>
-            <Button click={()=>navigate('checkout')} type='button' classes='button is-primary' name='Pay' />
+            <hr/>
+            <form onSubmit={applyCoupon}>
+              <Items type='text' name='coupon_code' labalName='Code:' classes=''/>
+              <Button type='submit' classes='button is-primary' name='Apply' />
+            </form>
+            <Button click={()=>navigate('checkout', {state: couponCode})} type='button' classes='button is-primary' name='Pay' />
           </div>
       }
     </div>

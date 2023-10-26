@@ -39,8 +39,7 @@ export default function Pay() {
         .then((response) => {
           return response.json()
         })
-        .then((session) => {    
-          console.log(session)
+        .then((session) => {
           setClientSecret(session.session.client_secret)
         })
   }, [])

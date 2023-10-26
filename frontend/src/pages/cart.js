@@ -15,6 +15,7 @@ export default function Cart() {
   const storeCart = useSelector(state => state.data.cart)
   const [couponValue, setCouponValue] = useState(0)
   const [couponCode, setCouponCode] = useState("")
+  const [coupon, setCoupon] = useState(0)
 
   useEffect(() => {
     dispatch(fetchCart(storeCart))
@@ -120,6 +121,36 @@ export default function Cart() {
     }
   }
 
+  const payInCart =()=> {
+    console.log(storeCart.cart_funct?.total_cost.toFixed(2))
+    if (couponValue > 0){
+      setCoupon(storeCart.cart_funct?.total_cost * (couponValue / 100)).toFixed(2)
+    }else {
+      setCoupon(storeCart.cart_funct?.total_cost.toFixed(2))
+    }
+    var data = {
+      'coupon_pay': coupon
+    }
+    fetch('/api/create_checkout_session/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrf_token
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(data)
+    })
+    .then((response) => {
+      console.log(response)
+      navigate('checkout', {state: couponCode})
+    })
+    .catch(function (error) {
+      console.log('Error 2');
+      console.log(error)
+    })
+    
+  }
+
   return (
     <div className="table">
       {
@@ -177,7 +208,7 @@ export default function Cart() {
               <Items type='text' name='coupon_code' labalName='Code:' classes=''/>
               <Button type='submit' classes='button is-primary' name='Apply' />
             </form>
-            <Button click={()=>navigate('checkout', {state: couponCode})} type='button' classes='button is-primary' name='Pay' />
+            <Button click={payInCart} type='button' classes='button is-primary' name='Pay' />
           </div>
       }
     </div>

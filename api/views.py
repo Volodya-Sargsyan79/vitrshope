@@ -51,7 +51,7 @@ def categoy_detail(request, slug):
   return Response(serializer_class_filter.data)
 
 @api_view(['GET'])
-def catedory(request, pk):
+def category(request, pk):
 
   queryset = Category.objects.get(id=pk)
   serializer_class = CategorySerializer(queryset, many=False)
@@ -61,6 +61,8 @@ def catedory(request, pk):
 def create_checkout_session(request):
   data = json.loads(request.body)
   cart = Cart(request)
+
+  print(data, 111111111)
 
   price = sum(float(item['total_price']) for item in list(cart))
 
@@ -78,18 +80,18 @@ def create_checkout_session(request):
         
         coupon.use()
 
-    
-
     if coupon_value > 0:
-      price = price * (int(coupon_value) / 100) 
+      price_coupon = price * (int(coupon_value) / 100)
+    else:
+      price_coupon = price
       
-  print(price, 555555555)
+    print(int(price*100), 555555555)
 
   stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
 
   session = stripe.PaymentIntent.create(
     currency = 'usd',
-    amount = price * 100,
+    amount = int(price_coupon * 100),
     automatic_payment_methods = {
       'enabled': True
     }

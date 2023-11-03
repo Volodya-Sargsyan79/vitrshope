@@ -62,62 +62,79 @@ def create_checkout_session(request):
   data = json.loads(request.body)
   cart = Cart(request)
 
-  print(data, 111111111)
-
   price = sum(float(item['total_price']) for item in list(cart))
 
-  if data:
-    coupon_code = data['coupon_code']
-    coupon_value = 0
+  coupon_value = data['coupon_value']
 
-    if coupon_code != "":
-      coupon = Coupon.objects.get(code = coupon_code)
-
-      
-
-      if coupon.can_use():
-        coupon_value = coupon.value
-        
-        coupon.use()
-
-    if coupon_value > 0:
-      price_coupon = price * (int(coupon_value) / 100)
-    else:
-      price_coupon = price
-      
-    print(int(price*100), 555555555)
+  if int(coupon_value) > 0:
+    x = price * int(coupon_value) / 100
+    price_coupon = int(float('{0:.2f}'.format(x)) * 100)
+  else:
+    price_coupon = int(price * 100)
 
   stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
 
   session = stripe.PaymentIntent.create(
     currency = 'usd',
-    amount = int(price_coupon * 100),
+    amount = price_coupon,
+    automatic_payment_methods = {
+      'enabled': True
+    }
+  )
+    
+  return JsonResponse({'session': session})
+
+def finish_checkout_session(request):
+  data = json.loads(request.body)
+  cart = Cart(request)
+
+  price = sum(float(item['total_price']) for item in list(cart))
+
+  # coupon_code = data['coupon_code']
+  # coupon_value = 0
+
+  # if coupon_code != "":
+  #   coupon = Coupon.objects.get(code = coupon_code)
+    
+
+  #   if coupon.can_use():
+  #     coupon_value = coupon.value
+      
+  #     coupon.use()
+
+  # if int(coupon_value) > 0:
+  #   x = price * int(coupon_value) / 100
+  #   price_coupon = int(float('{0:.2f}'.format(x)) * 100)
+  # else:
+  #   price_coupon = int(price * 100)
+
+  stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
+
+  session = stripe.PaymentIntent.create(
+    currency = 'usd',
+    amount = int(price * 100),
     automatic_payment_methods = {
       'enabled': True
     }
   )
 
+  # first_name = data['first_name']
+  # last_name = data['last_name']
+  # email = data['email']
+  # address = data['address']
+  # zipcode = data['zipcode']
+  # place = data['place']
+  # payment_intent = session.id
+  # orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
 
- 
+  # order = Order.objects.get(pk=orderid)
+  # order.payment_intent = payment_intent
+  # order.paid = True
+  # order.paid_amount = price_coupon
+  # order.used_coupon = coupon_code
+  # order.save()
 
-  if data:
-    first_name = data['first_name']
-    last_name = data['last_name']
-    email = data['email']
-    address = data['address']
-    zipcode = data['zipcode']
-    place = data['place']
-    payment_intent = session.id
-    orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
-
-    order = Order.objects.get(pk=orderid)
-    order.payment_intent = payment_intent
-    order.paid = True
-    order.paid_amount = price
-    order.used_coupon = coupon_code
-    order.save()
-
-    cart.clear()
+  # cart.clear()
     
   return JsonResponse({'session': session})
 

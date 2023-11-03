@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux"
-import { fetchCart } from "../store/reducer"
+import { fetchCart } from "../store/reducerApi"
+import { useCoupon } from "../store/reducer"
 import { useNavigate } from "react-router"
 
 import Button from "../UI/button"
@@ -13,9 +14,10 @@ export default function Cart() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const storeCart = useSelector(state => state.data.cart)
+  const couponCart = useSelector(state => state.coupon.coupon)
   const [couponValue, setCouponValue] = useState(0)
   const [couponCode, setCouponCode] = useState("")
-  const [coupon, setCoupon] = useState(0)
+
 
   useEffect(() => {
     dispatch(fetchCart(storeCart))
@@ -113,6 +115,10 @@ export default function Cart() {
         if (data.amount) {
           setCouponValue(parseInt(data.amount))
           setCouponCode(data.coupon)
+          dispatch(useCoupon({
+            coupon_code: data.coupon,
+            coupon_value: data.amount
+          }))
         } else {
           setCouponValue(0)
           setCouponCode('')
@@ -121,35 +127,31 @@ export default function Cart() {
     }
   }
 
-  const payInCart =()=> {
-    console.log(storeCart.cart_funct?.total_cost.toFixed(2))
-    if (couponValue > 0){
-      setCoupon(storeCart.cart_funct?.total_cost * (couponValue / 100)).toFixed(2)
-    }else {
-      setCoupon(storeCart.cart_funct?.total_cost.toFixed(2))
-    }
-    var data = {
-      'coupon_pay': coupon
-    }
-    fetch('/api/create_checkout_session/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrf_token
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify(data)
-    })
-    .then((response) => {
-      console.log(response)
-      navigate('checkout', {state: couponCode})
-    })
-    .catch(function (error) {
-      console.log('Error 2');
-      console.log(error)
-    })
-    
-  }
+  // const payInCart =()=> {
+  //   navigate('checkout', {state: data})
+    // var data = {
+    //   'coupon_code':  couponCode,
+    //   'coupon_value': couponValue
+    // }
+
+    // fetch('/api/create_checkout_session/', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'X-CSRFToken': csrf_token
+    //   },
+    //   credentials: 'same-origin',
+    //   body: JSON.stringify(data)
+    // })
+    // .then((response) => {
+    //   console.log(response)
+    //   navigate('checkout', {state: data})
+    // })
+    // .catch(function (error) {
+    //   console.log('Error 2');
+    //   console.log(error)
+    // })
+  // }
 
   return (
     <div className="table">
@@ -208,7 +210,7 @@ export default function Cart() {
               <Items type='text' name='coupon_code' labalName='Code:' classes=''/>
               <Button type='submit' classes='button is-primary' name='Apply' />
             </form>
-            <Button click={payInCart} type='button' classes='button is-primary' name='Pay' />
+            <Button click={()=>navigate('checkout', {state: {'coupon_value':couponValue,'coupon_code':couponCode}})} type='button' classes='button is-primary' name='Pay' />
           </div>
       }
     </div>

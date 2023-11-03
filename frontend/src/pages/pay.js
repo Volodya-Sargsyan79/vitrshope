@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux"
 
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
@@ -9,6 +10,7 @@ export default function Pay() {
 
   const [stripePromise, setStripePromise] = useState(null)
   const [clientSecret, setClientSecret] = useState("")
+  const couponCart = useSelector(state => state.coupon.coupon)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +36,7 @@ export default function Pay() {
             'X-CSRFToken': csrf_token
           },
           credentials: 'same-origin',
-          body: JSON.stringify({})
+          body: JSON.stringify(couponCart)
         })
         .then((response) => {
           return response.json()

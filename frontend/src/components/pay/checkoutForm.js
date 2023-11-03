@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux"
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router"
 import { useLocation } from 'react-router-dom';
@@ -12,12 +13,42 @@ export default function CheckoutForm({couponCode}) {
   const elements = useElements()
   const navigate = useNavigate()
   const location = useLocation();
+  const couponCart = useSelector(state => state.coupon.coupon)
   
 
   console.log(location.state,2222)
 
   const [message, setMessage] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
+
+  useEffect(() => {
+    console.log(222222222)
+    fetch('/api/finish_checkout_session/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrf_token
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({})
+    })
+    .then((response) => {
+      console.log(response,222222244444)
+      return response.json()
+      
+    })
+    .then((session) => {
+      console.log(session,2222222555555)
+    })
+    .then((result) => {
+      if (result.error) {
+        alert(result.error.message)
+      }
+    })
+    .catch(function (error) {
+      console.log('Error:', error);
+    })
+  },[])
 
   const handleSubmit = async (e) => {
 
@@ -26,6 +57,7 @@ export default function CheckoutForm({couponCode}) {
     if (!stripe || !elements){
       return;
     }
+  
 
     setIsProcessing(true)
 
@@ -36,10 +68,10 @@ export default function CheckoutForm({couponCode}) {
       'address': e.target.address.value,
       'zipcode': e.target.zipcode.value,
       'place': e.target.place.value,
-      'coupon_code': location.state
+      'coupon_code': couponCart.coupon_code,
     }
     
-    fetch('/api/create_checkout_session/', {
+    fetch('/api/finish_checkout_session/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,14 +84,13 @@ export default function CheckoutForm({couponCode}) {
       return response.json()
     })
     .then((session) => {
+      console.log(session,222222244444)
       stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/cart`
         }
       })
-      
-      window.location.href = '/cart'
     })
     .then((result) => {
       if (result.error) {

@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import toolkitReducer from './reducer'
+import apiReducer from './reducerApi'
+import toolkitSlice from './reducer'
 
 
 const rootReducer = combineReducers({
-    data:toolkitReducer
+    data:apiReducer,
+    coupon:toolkitSlice
 })
 
 export const store = configureStore({

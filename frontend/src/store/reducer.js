@@ -1,34 +1,19 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import axios from "axios"
+import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = {
-    menu: [],
-    cart: [],
-}
-
-export const fatchNavBar = createAsyncThunk('menu/fatchNavBar', () => {
-    return axios
-        .get('http://localhost:8000/api/category?format=json')
-        .then((response) => response.data)
-})
-
-export const fetchCart = createAsyncThunk('cart/fetchCart', () => {
-    return axios
-        .get('/api/cart_detail')
-        .then((response) => response.data)
-})
-
-const menuSlice = createSlice({
-    name: 'dara',
-    initialState,
-    extraReducers: (builder) => {
-        builder.addCase(fatchNavBar.fulfilled, (state, action) => {
-            state.menu = action.payload
-        })
-        builder.addCase(fetchCart.fulfilled, (state, action) => {
-            state.cart = action.payload
-        })
+const toolkitSlice = createSlice({
+    name: 'data',
+    initialState: {
+        coupon: {
+              coupon_code: "",
+              coupon_value: 0
+            }
+    },
+    reducers: {
+        useCoupon(state, action){
+            state.coupon = action.payload
+        }
     }
 })
 
-export default menuSlice.reducer
+export default toolkitSlice.reducer
+export const { useCoupon } = toolkitSlice.actions

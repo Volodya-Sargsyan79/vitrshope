@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom"
 import Button from "../../UI/button";
 import { useSelector, useDispatch } from "react-redux"
-import { fetchCart } from "../../store/reducer"
+import { fetchCart } from "../../store/reducerApi"
 
 export default function ProductDetail() {
   

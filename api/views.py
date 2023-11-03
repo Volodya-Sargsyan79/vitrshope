@@ -64,34 +64,59 @@ def create_checkout_session(request):
 
   price = sum(float(item['total_price']) for item in list(cart))
 
-  coupon_value = data['coupon_value']
+  coupon_code = data['coupon_code']
+  coupon_value = 0
+
+  if coupon_code != "":
+    coupon = Coupon.objects.get(code = coupon_code)
+    
+
+    if coupon.can_use():
+      coupon_value = coupon.value
 
   if int(coupon_value) > 0:
     x = price * int(coupon_value) / 100
-    price_coupon = int(float('{0:.2f}'.format(x)) * 100)
+    price_coupon = float('{0:.2f}'.format(x))
   else:
-    price_coupon = int(price * 100)
-
+    price_coupon = price
+      
   stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
 
   session = stripe.PaymentIntent.create(
     currency = 'usd',
-    amount = price_coupon,
+    amount = int(price_coupon * 100),
     automatic_payment_methods = {
       'enabled': True
     }
   )
-    
+
+  first_name = data['first_name']
+  last_name = data['last_name']
+  email = data['email']
+  address = data['address']
+  zipcode = data['zipcode']
+  place = data['place']
+  payment_intent = session.id
+  orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
+
+  order = Order.objects.get(pk=orderid)
+  order.payment_intent = payment_intent
+  order.paid_amount = price_coupon
+  order.used_coupon = coupon_code
+  order.save()  
+  
   return JsonResponse({'session': session})
 
-def finish_checkout_session(request):
-  data = json.loads(request.body)
-  cart = Cart(request)
+# def finish_checkout_session(request):
+  # data = json.loads(request.body)
+  # cart = Cart(request)
 
-  price = sum(float(item['total_price']) for item in list(cart))
+  # price = sum(float(item['total_price']) for item in list(cart))
 
   # coupon_code = data['coupon_code']
   # coupon_value = 0
+
+  # print(coupon_code, 11111111111111)
 
   # if coupon_code != "":
   #   coupon = Coupon.objects.get(code = coupon_code)
@@ -102,21 +127,25 @@ def finish_checkout_session(request):
       
   #     coupon.use()
 
+  # print(coupon_value, 2222222)
+
   # if int(coupon_value) > 0:
   #   x = price * int(coupon_value) / 100
-  #   price_coupon = int(float('{0:.2f}'.format(x)) * 100)
+  #   price_coupon = float('{0:.2f}'.format(x))
   # else:
-  #   price_coupon = int(price * 100)
+  #   price_coupon = price
 
-  stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
+  # print(price_coupon, 33333)
 
-  session = stripe.PaymentIntent.create(
-    currency = 'usd',
-    amount = int(price * 100),
-    automatic_payment_methods = {
-      'enabled': True
-    }
-  )
+  # stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
+
+  # session = stripe.PaymentIntent.create(
+  #   currency = 'usd',
+  #   amount = int(price_coupon * 100),
+  #   automatic_payment_methods = {
+  #     'enabled': True
+  #   }
+  # )
 
   # first_name = data['first_name']
   # last_name = data['last_name']
@@ -124,7 +153,7 @@ def finish_checkout_session(request):
   # address = data['address']
   # zipcode = data['zipcode']
   # place = data['place']
-  # payment_intent = session.id
+  # payment_intent = 12
   # orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
 
   # order = Order.objects.get(pk=orderid)
@@ -136,7 +165,7 @@ def finish_checkout_session(request):
 
   # cart.clear()
     
-  return JsonResponse({'session': session})
+  # return JsonResponse()
 
 
 def api_remove_from_cart(request):

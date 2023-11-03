@@ -16,7 +16,7 @@ export const routes = [
     { path: '/:category/:slug/', element: <ProductDetail />},
     { path: '/:slug/', element: <CategoryDetail />},
     { path: 'cart/', element: <Cart /> },
-    { path: 'cart/checkout/', element: <Pay /> },
+    { path: 'cart/pay/', element: <Pay /> },
     { path: 'cart/success/', element: <Success /> },
     { path: 'about/', element: <About /> }
 ]

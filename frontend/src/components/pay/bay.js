@@ -1,43 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux"
+import React, { useState } from "react";
+import { useSelector } from "react-redux"
 import { useNavigate, useLocation } from "react-router"
 
+import Items from '../elements/items'
+import Button from "../../UI/button";
 
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import '../../styles/checkoutForm.scss'
 
-import Items from '../components/elements/items'
-import Button from "../UI/button";
-import CheckoutForm from "../components/pay/checkoutForm";
+export default function Bay() {
 
-import '../styles/checkoutForm.scss'
-
-export default function Pay() {
-
-  const [stripePromise, setStripePromise] = useState(null)
-  const [clientSecret, setClientSecret] = useState("")
   const [couponValue, setCouponValue] = useState(0)
   const [couponCode, setCouponCode] = useState("")
   const storeCart = useSelector(state => state.data.cart)
+  const navigate = useNavigate()
   const location = useLocation()
-
-  console.log(!location.state, 222222)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/cart_detail/');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setStripePromise(loadStripe(data?.pub_key));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  },[])
 
   const handleSubmit = async (e) => {
 
@@ -66,38 +42,17 @@ export default function Pay() {
         return response.json()
       })
       .then((session) => {
-        setClientSecret(session.session.client_secret)
+        navigate('/cart/pay', 
+          {  
+            state: {
+              'clientSecret': session.session.client_secret, 
+              'sessionId': session.session.id,
+              'amount': session.session.amount,
+              'couponCode': couponCode,
+            }
+          })
       })
-
-    
-    // fetch('/api/finish_checkout_session/', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'X-CSRFToken': csrf_token
-    //   },
-    //   credentials: 'same-origin',
-    //   body: JSON.stringify({})
-    // })
-    // .then((response) => {
-    //   return response.json()
-    // })
-    // .then((session) => {
-    //   stripe.confirmPayment({
-    //     elements,
-    //     confirmParams: {
-    //       return_url: `${window.location.origin}/cart`
-    //     }
-    //   })
-    // })
-    // .then((result) => {
-    //   if (result.error) {
-    //     alert(result.error.message)
-    //   }
-    // })
-    // .catch(function (error) {
-    //   console.log('Error:', error);
-    // })
+      
   }
 
   const applyCoupon =(e)=> {
@@ -122,7 +77,6 @@ export default function Pay() {
   }
 
   return (
-    <div>
     <div>
       {location.state 
         ? <div className="checkoutForm_container"> 
@@ -174,12 +128,6 @@ export default function Pay() {
           </div>
       }
       
-    </div>
-      {/* { stripePromise && clientSecret && (
-        <Elements stripe={stripePromise} options={{clientSecret}}>
-          <CheckoutForm />
-        </Elements>
-      )} */}
     </div>
   )
 }

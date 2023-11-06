@@ -141,7 +141,7 @@ export default function Cart() {
               </tfoot>
             </table>
             <hr/>
-            <Button click={() => navigate('pay', {state: {'pay': true}})} type='button' classes='button is-primary' name='Bay' />
+            <Button click={() => navigate('bay', {state: {'pay': true}})} type='button' classes='button is-primary' name='Bay' />
           </div>
       }
     </div>

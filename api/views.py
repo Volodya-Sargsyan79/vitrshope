@@ -107,65 +107,25 @@ def create_checkout_session(request):
   
   return JsonResponse({'session': session})
 
-# def finish_checkout_session(request):
-  # data = json.loads(request.body)
-  # cart = Cart(request)
+def finish_checkout_session(request):
+  data = json.loads(request.body)
+  cart = Cart(request)
+  jsonresponse = {'success': True}
 
-  # price = sum(float(item['total_price']) for item in list(cart))
+  coupon_code = data['coupon_code']
+  payment_intent = data['payment_intent']
 
-  # coupon_code = data['coupon_code']
-  # coupon_value = 0
+  if coupon_code != "":
+    coupon = Coupon.objects.get(code = coupon_code)
+    coupon.use()
 
-  # print(coupon_code, 11111111111111)
+  order = Order.objects.get(payment_intent = payment_intent)
+  order.paid = True
+  order.save()
 
-  # if coupon_code != "":
-  #   coupon = Coupon.objects.get(code = coupon_code)
+  cart.clear()
     
-
-  #   if coupon.can_use():
-  #     coupon_value = coupon.value
-      
-  #     coupon.use()
-
-  # print(coupon_value, 2222222)
-
-  # if int(coupon_value) > 0:
-  #   x = price * int(coupon_value) / 100
-  #   price_coupon = float('{0:.2f}'.format(x))
-  # else:
-  #   price_coupon = price
-
-  # print(price_coupon, 33333)
-
-  # stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
-
-  # session = stripe.PaymentIntent.create(
-  #   currency = 'usd',
-  #   amount = int(price_coupon * 100),
-  #   automatic_payment_methods = {
-  #     'enabled': True
-  #   }
-  # )
-
-  # first_name = data['first_name']
-  # last_name = data['last_name']
-  # email = data['email']
-  # address = data['address']
-  # zipcode = data['zipcode']
-  # place = data['place']
-  # payment_intent = 12
-  # orderid = checkout(request, first_name, last_name, email, address, zipcode, place)
-
-  # order = Order.objects.get(pk=orderid)
-  # order.payment_intent = payment_intent
-  # order.paid = True
-  # order.paid_amount = price_coupon
-  # order.used_coupon = coupon_code
-  # order.save()
-
-  # cart.clear()
-    
-  # return JsonResponse()
+  return JsonResponse(jsonresponse)
 
 
 def api_remove_from_cart(request):

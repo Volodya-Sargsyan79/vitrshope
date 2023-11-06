@@ -7,7 +7,8 @@ import CategoryDetail from "../pages/category_detail";
 import About from "../pages/about";
 import Cart from "../pages/cart";
 import Success from "../pages/success";
-import Pay from "../pages/pay";
+import Bay from "../components/pay/bay";
+import Pay from "../components/pay/pay";
 
 
 export const routes = [
@@ -16,6 +17,7 @@ export const routes = [
     { path: '/:category/:slug/', element: <ProductDetail />},
     { path: '/:slug/', element: <CategoryDetail />},
     { path: 'cart/', element: <Cart /> },
+    { path: 'cart/bay/', element: <Bay /> },
     { path: 'cart/pay/', element: <Pay /> },
     { path: 'cart/success/', element: <Success /> },
     { path: 'about/', element: <About /> }

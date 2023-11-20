@@ -5,15 +5,4 @@ from django.shortcuts import render
 from cart.cart import Cart
 
 def index(request, category=None, slug=None):
-    cart = Cart(request)
-
-    # if cart:
-    #     for item in cart:
-    #         with product=item.product
-    #             print(product.title)
-    # else:
-    context = {
-        'cart': cart
-    }
-
-    return render(request, 'index.html', context)
+    return render(request, 'index.html')

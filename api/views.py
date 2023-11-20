@@ -4,6 +4,7 @@ import stripe
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from rest_framework import generics
 from rest_framework.response import Response
@@ -38,6 +39,10 @@ def product_detail(request, category, slug):
   serializer_class = ProductSerializer(queryset, many=False)
   
   return Response(serializer_class.data)
+
+def search(request):
+  products = Product.objects.filter(Q(title__icontains=query | Q(des)))
+
 
 @api_view(['GET'])
 def categoy_detail(request, slug):
